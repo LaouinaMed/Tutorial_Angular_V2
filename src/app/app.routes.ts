@@ -1,25 +1,23 @@
 import { Routes } from '@angular/router';
-import { MasterComponent } from './components/master/master.component';
-import { EmployeeComponent } from './components/employee/employee.component';
-import { ClientComponent } from './components/client/client.component';
+import { PersonneComponent } from './components/client/personne.component';
+import { LogsComponent } from './components/logs/logs.component';
 
 export const routes: Routes = [
     {
         path:'',
-        redirectTo:'master',
+        redirectTo:'client',
         pathMatch:'full'
     },
+   
+
     {
-        path:'master',
-        component:MasterComponent
+        path:'client',
+        component:PersonneComponent
     },
 
     {
-        path:'employee',
-        component:EmployeeComponent
+        path:'logs',
+        component:LogsComponent
     },
-    {
-        path:'client',
-        component:ClientComponent
-    }
+   
 ];

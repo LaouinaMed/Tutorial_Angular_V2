@@ -1,0 +1,41 @@
+<div class="row g-3">
+
+    <div class="col-10">
+        <div class="card">
+            <div class="card-header bg-success">
+                <strong>Chercher Par Message</strong>
+            </div>
+
+            <div class="card-body">
+                <input type="text" class="form-control" [(ngModel)]="searchQuery" placeholder="Chercher Par Message"  (input)="onSearch()" />
+            </div>
+        </div>  
+
+    </div>
+    <div class="col-10">
+        <div class="card">
+            <div class="card-header bg-success">
+                <strong>Message</strong>
+            </div>
+
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Logs Erreur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of filteredLogs let i = index; ">
+                            <td>{{ i+1 }}</td>
+                            <td>{{ item.message}}</td>
+                         
+                            
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>    
