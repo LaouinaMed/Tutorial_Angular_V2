@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Personne } from 'src/app/model/class/Personne';
-import { FormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, NgForm } from '@angular/forms';
 import { PersonneService } from 'src/app/services/personne/personne.service';
 
 @Component({
@@ -21,6 +21,15 @@ export class PersonneComponent implements OnInit {
 
 
   personneService = inject(PersonneService);
+
+  patterns = {
+    nom: '^[A-Za-z]{2,}$',
+    prenom: '^[A-Za-z]{2,}$',
+    cin: '^[A-Z][A-Z0-9]\\d{5}$',  
+    tel: '^(212[6-7]\\d{8}|0[67]\\d{8})$',  
+    adresse: '^[A-Za-z0-9,.\s]{5,}$',
+    email: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+};
 
   ngOnInit(): void {
     this.loadPersonnes();
@@ -57,18 +66,18 @@ export class PersonneComponent implements OnInit {
 
 
   
-  resetForm() {
+  resetForm(form: NgForm) {
     this.personneObj = new Personne();
   }
 
-  onSavePersonne(){
+  onSavePersonne(form: NgForm){
     if(this.personneObj.id != null && this.personneObj.id !== 0){
       this.personneService.updatePersonne(this.personneObj.id, this.personneObj).subscribe(
         {
           next:(res : Personne) =>{
             alert("Personne mise à jour avec succès");
             this.loadPersonnes();
-            this.resetForm();
+            this.resetForm(form);
           },
           error: (error)=>{
             alert("Échec de la mise à jour de la personne");
@@ -82,7 +91,7 @@ export class PersonneComponent implements OnInit {
           alert("Personne créée avec succès");
           this.loadPersonnes(); 
           
-          this.resetForm(); 
+          this.resetForm(form); 
         },
         error: (error)=>{
           alert("Échec de la création de la personne");

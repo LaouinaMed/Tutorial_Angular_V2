@@ -75,46 +75,69 @@
                 <strong>Nouveau Personn</strong>
             </div>
             <div class="card-body">
-                <form #form="ngForm">
+                <form #form="ngForm" (ngSubmit)="onSavePersonne(form)">
                     <div class="row">
-                        <div class="col-6">
-                            <label for="">Nom</label>
-                            <input type="text" name="nom" [(ngModel)]="personneObj.nom" class="form-control" required pattern="[A-Za-z]{2,}">
-                        </div>
-
-                        <div class="col-6">
-                            <label for="">Prénom</label>
-                            <input type="text" name="prenom" [(ngModel)]="personneObj.prenom" class="form-control" required pattern="[A-Za-z]{2,}">
-                        </div>
-
-                        <div class="col-6">
-                            <label for="">CIN</label>
-                            <input type="text" name="cin" [(ngModel)]="personneObj.cin" class="form-control" required>
-                        </div>
-
-                        <div class="col-6">
-                            <label for="">Contact No</label>
-                            <input type="text" name="contactNo" [(ngModel)]="personneObj.tel" class="form-control" required>
-                        </div>
-
-                        <div class="col-6">
-                            <label for="">Address</label>
-                            <input type="text" name="address" [(ngModel)]="personneObj.adresse" class="form-control" required pattern="^[A-Za-z0-9,.'\-\s]{5,}">
-                        </div>
+                      <div class="col-6">
+                        <label for="nom">Nom</label>
+                        <input type="text" name="nom" [(ngModel)]="personneObj.nom" class="form-control"
+                          #nom="ngModel" [pattern]="patterns.nom"
+                          [class.is-invalid]="nom.invalid && nom.touched">
+                        <small *ngIf="nom.invalid && nom.touched" class="text-danger">Nom invalide (minimum 2 lettres).</small>
+                      </div>
+                  
+                      <div class="col-6">
+                        <label for="prenom">Prénom</label>
+                        <input type="text" name="prenom" [(ngModel)]="personneObj.prenom" class="form-control"
+                          #prenom="ngModel" [pattern]="patterns.prenom"
+                          [class.is-invalid]="prenom.invalid && prenom.touched">
+                        <small *ngIf="prenom.invalid && prenom.touched" class="text-danger">Prénom invalide (minimum 2 lettres).</small>
+                      </div>
+                  
+                      <div class="col-6">
+                        <label for="cin">CIN</label>
+                        <input type="text" name="cin" [(ngModel)]="personneObj.cin" class="form-control"
+                          #cin="ngModel" [pattern]="patterns.cin"
+                          [class.is-invalid]="cin.invalid && cin.touched">
+                        <small *ngIf="cin.invalid && cin.touched" class="text-danger">CIN Invalide.</small>
+                      </div>
+                  
+                      <div class="col-6">
+                        <label for="tel">Contact No</label>
+                        <input type="text" name="contactNo" [(ngModel)]="personneObj.tel" class="form-control"
+                          #tel="ngModel" [pattern]="patterns.tel"
+                          [class.is-invalid]="tel.invalid && tel.touched">
+                        <small *ngIf="tel.invalid && tel.touched" class="text-danger">Numéro invalide </small>
+                      </div>
+                  
+                      <div class="col-6">
+                        <label for="adresse">Adresse</label>
+                        <input type="text" name="adresse" [(ngModel)]="personneObj.adresse" class="form-control"
+                          #adresse="ngModel" [pattern]="patterns.adresse"
+                          [class.is-invalid]="adresse.invalid && adresse.touched">
+                        <small *ngIf="adresse.invalid && adresse.touched" class="text-danger">Adresse trop courte (min 5 caractères).</small>
+                      </div>
+                  
+                      <div class="col-6">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" [(ngModel)]="personneObj.email" class="form-control"
+                          #email="ngModel" [pattern]="patterns.email"
+                          [class.is-invalid]="email.invalid && email.touched">
+                        <small *ngIf="email.invalid && email.touched" class="text-danger">Email invalide.</small>
+                      </div>
                     </div>
-
+                  
                     <div class="row pt-2">
-                        <div class="col-6 text-center">
-                            <button class="btn btn-secondary" (click)="resetForm()">Reset</button>
-                        </div>
-
-                        <div class="col-6">
-                            <button class="btn btn-success" [disabled]="!form.valid" (click)="onSavePersonne()">
-                                {{ personneObj.id != null && personneObj.id !== 0 ? 'Update Client' : 'Save Client' }}
-                            </button>
-                        </div>
+                      <div class="col-6 text-center">
+                        <button class="btn btn-secondary" type="button" (click)="resetForm(form)">Reset</button>
+                      </div>
+                  
+                      <div class="col-6">
+                        <button class="btn btn-success" type="submit" [disabled]="form.invalid">
+                          {{ personneObj.id != null && personneObj.id !== 0 ? 'Update Client' : 'Save Client' }}
+                        </button>
+                      </div>
                     </div>
-                </form>
+                  </form>
             </div>
         </div>
     </div>

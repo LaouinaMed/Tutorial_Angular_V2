@@ -1,18 +1,20 @@
 export class Personne {
-    id: number;        // ID de la personne
-    cin: string;             // CIN (identifiant unique de la personne)
-    nom: string;             // Nom de la personne
-    prenom: string;          // Prénom de la personne
-    tel: string;       // Numéro de téléphone
-    adresse: string;         // Adresse de la personne
+    id: number;        
+    cin: string;             
+    nom: string;             
+    prenom: string;          
+    tel: string;       
+    adresse: string;         
+    email :string;
   
     constructor() {
-      this.id = 0;      // Initialisation de l'ID à 0
-      this.cin = '';          // Initialisation du CIN à une chaîne vide
-      this.nom = '';          // Initialisation du nom à une chaîne vide
-      this.prenom = '';       // Initialisation du prénom à une chaîne vide
-      this.tel = '';    // Initialisation du téléphone à une chaîne vide
-      this.adresse = '';      // Initialisation de l'adresse à une chaîne vide
+      this.id = 0;      
+      this.cin = '';         
+      this.nom = '';          
+      this.prenom = '';       
+      this.tel = '';    
+      this.adresse = '';      
+      this.email="";
     }
   }
   

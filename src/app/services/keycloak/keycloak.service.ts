@@ -12,7 +12,7 @@ export class KeycloakService {
       this._keycloak = new Keycloak({
         url: 'http://localhost:8080',
         realm: 'appDemo',
-        clientId: 'clientAppDemo'
+        clientId: 'clientAppDemo',
       });
     }
 
@@ -28,16 +28,15 @@ export class KeycloakService {
 
   
 
-
   async init() {
     try {
      const authenticated = await this.keycloak?.init({
-        onLoad: 'login-required',  // Demande à l'utilisateur de se connecter si non authentifié
+        onLoad: 'login-required',  
       });
       console.log('Keycloak initialisé avec succès, utilisateur authentifié:', authenticated);
       console.log('Token:', this.keycloak?.token);
 
-    console.log('Token récupéré:', this.getToken());
+      console.log('Token récupéré:', this.getToken());
     } catch (error) {
       console.error('Erreur d\'initialisation de Keycloak', error);
     }
@@ -48,5 +47,6 @@ export class KeycloakService {
       this.keycloak.logout();
     }
   }
+
 
 }

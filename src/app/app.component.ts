@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { KeycloakService } from './services/keycloak/keycloak.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule,RouterOutlet,RouterLink,RouterLinkActive],
+  imports: [CommonModule,RouterOutlet,RouterLink,RouterLinkActive,ReactiveFormsModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
