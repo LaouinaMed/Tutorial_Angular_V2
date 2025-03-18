@@ -34,6 +34,7 @@ export class PersonneComponent implements OnInit {
   ngOnInit(): void {
     this.loadPersonnes();
   }
+  
 
   onImport(): void {
     this.personneService.importData().subscribe({

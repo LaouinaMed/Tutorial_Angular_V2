@@ -20,5 +20,10 @@ export class AppComponent {
   logout() {
     this.keycloakService.logout();  // Appel de la méthode logout du service Keycloak
   }
+
+  isAdmin(): boolean {
+    const roles = this.keycloakService.getUserRoles();
+    return roles.includes('client_admin');  // Vérifie si le rôle 'client_admin' est présent
+  }
   
 }
