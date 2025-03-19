@@ -3,7 +3,7 @@
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Personne } from '../../model/class/Personne'; // Mettre à jour la classe
 import { environment } from 'src/environments/environment.development';
 import { KeycloakService } from '../keycloak/keycloak.service';
@@ -62,6 +62,23 @@ export class PersonneService {
       headers: headers
     });
   }
+
+
+
+  getUserRolesByKeycloakId(keycloakUserId: string): Observable<string[]> {
+    const token = this.keycloakService.getToken(); // 🔥 Récupérer le token d'authentification
+  
+    if (!token) {
+      console.error("Erreur : Aucun token trouvé !");
+      return throwError(() => new Error("L'utilisateur n'est pas authentifié."));
+    }
+  
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+    return this.http.get<string[]>(`${environment.API_URL}api/personnes/roles/${keycloakUserId}`, { headers });
+  }
+  
+  
   
 }
 

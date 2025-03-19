@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Personne } from 'src/app/model/class/Personne';
 import { FormGroup, FormsModule, NgForm } from '@angular/forms';
 import { PersonneService } from 'src/app/services/personne/personne.service';
+import * as bootstrap from 'bootstrap';
+
 
 @Component({
   selector: 'app-personne',
@@ -18,6 +20,15 @@ export class PersonneComponent implements OnInit {
   filteredPersonnes: Personne[] = [];
   searchQuery: string = ''; 
   selectedFile: File | null = null;
+  selectedUser: Personne | null = null; 
+
+  userRoles: string[] = []; 
+
+openModal() {
+  const modal = new bootstrap.Modal(document.getElementById('rolesModal')!);
+  modal.show();
+}
+
 
 
   personneService = inject(PersonneService);
@@ -27,7 +38,7 @@ export class PersonneComponent implements OnInit {
     prenom: '^[A-Za-z]{2,}$',
     cin: '^[A-Z][A-Z0-9]\\d{5}$',  
     tel: '^(212[6-7]\\d{8}|0[67]\\d{8})$',  
-    adresse: '^[A-Za-z0-9,.\s]{5,}$',
+    adresse: '^[A-Za-z0-9,\\.\\s-_]{5,}$',
     email: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
 };
 
@@ -171,6 +182,33 @@ export class PersonneComponent implements OnInit {
       alert("Veuillez sélectionner un fichier");
     }
   }
+
+  viewRoles(user: Personne) {
+    this.selectedUser = user; // 🔥 Stocker l'utilisateur sélectionné
+  
+    if (!user.keycloakId) {
+      console.error("Erreur : Cet utilisateur n'a pas de Keycloak ID !");
+      return;
+    }
+  
+    this.personneService.getUserRolesByKeycloakId(user.keycloakId).subscribe({
+      next: (roles) => {
+        this.userRoles = roles;
+        console.log("Rôles récupérés :", this.userRoles);
+        this.openModal();
+      },
+      error: (error) => {
+        console.error("Erreur lors de la récupération des rôles", error);
+        this.userRoles = [];
+      }
+    });
+  }
+  
+  
+  
+  
+  
+  
   
   
 }

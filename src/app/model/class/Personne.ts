@@ -6,6 +6,7 @@ export class Personne {
     tel: string;       
     adresse: string;         
     email :string;
+    keycloakId: string;
   
     constructor() {
       this.id = 0;      
@@ -15,6 +16,7 @@ export class Personne {
       this.tel = '';    
       this.adresse = '';      
       this.email="";
+      this.keycloakId = '';
     }
   }
   
