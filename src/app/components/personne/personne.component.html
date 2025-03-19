@@ -145,31 +145,18 @@
     </div>
 </div>
 
-<!-- Modal Bootstrap pour afficher et modifier les rôles -->
 <div class="modal fade" id="rolesModal" tabindex="-1" aria-labelledby="rolesModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="rolesModalLabel">Gérer les rôles de {{ selectedUser?.nom }} {{ selectedUser?.prenom }}</h5>
+        <h5 class="modal-title" id="rolesModalLabel">Rôles de l'utilisateur</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <h6>Rôles actuels :</h6>
-        <ul class="list-group">
-          <li *ngFor="let role of userRoles" class="list-group-item d-flex justify-content-between align-items-center">
-            {{ role }}
-            <i class="bi bi-pencil-square text-primary" (click)="openRoleSelectionModal()"></i>
-          </li>
+        <ul *ngIf="userRoles.length > 0">
+          <li *ngFor="let role of userRoles">{{ role }}</li>
         </ul>
-
-        <!-- Liste des rôles à ajouter -->
-        <div *ngIf="showRoleSelection">
-          <h6 class="mt-3">Ajouter un rôle :</h6>
-          <select class="form-select" [(ngModel)]="selectedRole">
-            <option *ngFor="let role of availableRoles" [value]="role">{{ role }}</option>
-          </select>
-          <button class="btn btn-success mt-2" (click)="assignRole()">Attribuer</button>
-        </div>
+        <p *ngIf="userRoles.length === 0">Aucun rôle trouvé.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
@@ -177,4 +164,3 @@
     </div>
   </div>
 </div>
-

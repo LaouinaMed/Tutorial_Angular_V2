@@ -21,11 +21,12 @@ export class roleGuard implements CanActivate {
     console.log(roles);
 
     // Vérifie si l'utilisateur a l'un des rôles requis
-    if (requiredRoles.some((role: string) => roles.includes(role))) {
-      return true;  // L'utilisateur peut accéder à la route
+    if (roles.includes('client_admin') || roles.includes('client_user')) {
+      return true;  // L'utilisateur a l'un des rôles nécessaires, il peut accéder à la route
     }
-    // Si l'utilisateur n'a pas les bons rôles, redirigez-le
-    this.router.navigate(['/']);  
+    this.keycloakService.logout();  
+
+    
     return false;
   }
 }

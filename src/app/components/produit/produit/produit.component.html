@@ -1,0 +1,96 @@
+<div class="row g-3">
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header bg-success">
+                <strong>Chercher Personnes</strong>
+            </div>
+
+            <div class="card-body">
+                <input type="text" class="form-control" [(ngModel)]="searchQuery" placeholder="Chercher Par produit"  (input)="onSearch()" />
+            </div>
+        </div>  
+   
+    </div>
+
+
+    <div class="col-10"> 
+        <div class="card">
+            <div class="card-header bg-success">
+                <strong>Personnes List</strong>
+            </div>
+
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Produit</th>
+                            <th>Quantite</th>
+                            <th>Prix</th>
+    
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of filteredProduits let i = index; ">
+                            <td>{{ i+1 }}</td>
+                            <td>{{ item.libeller }}</td>
+                            <td>{{ item.quantite }}</td>
+                            <td>{{ item.prix }}</td>
+                            
+                            
+                            <td>
+                                <button class="btn btn-primary me-4" (click)="onEdit(item)">Edit</button>
+                                <button class="btn btn-danger me-4" (click)="onDelete(item.id)">Delete</button>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-2">
+         
+        <div class="card">
+            <div class="card-header bg-success">
+                <strong>Nouveau Personn</strong>
+            </div>
+            <div class="card-body">
+                <form #form="ngForm" (ngSubmit)="onSaveProduit(form)">
+                    <div class="row">
+                      <div class="col-12">
+                        <label for="libeller">Libeller</label>
+                        <input type="text" name="libeller" [(ngModel)]="produitObj.libeller" class="form-control">
+                      </div>
+                  
+                      <div class="col-12">
+                        <label for="Quantité">Quantité</label>
+                        <input type="text" name="Quantité" [(ngModel)]="produitObj.quantite" class="form-control">
+                      </div>
+                  
+                      <div class="col-12">
+                        <label for="prix">Prixx</label>
+                        <input type="text" name="prix" [(ngModel)]="produitObj.prix" class="form-control">
+                 
+                      </div>
+                  
+                      
+                    </div>
+                  
+                    <div class="row pt-2">
+                      <div class="col-6 text-center">
+                        <button class="btn btn-secondary" type="button" (click)="resetForm(form)">Reset</button>
+                      </div>
+                  
+                      <div class="col-6">
+                        <button class="btn btn-success" type="submit" [disabled]="form.invalid">
+                          {{ produitObj.id != null && produitObj.id !== 0 ? 'Update Client' : 'Save Client' }}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+            </div>
+        </div>
+    </div>
+</div>

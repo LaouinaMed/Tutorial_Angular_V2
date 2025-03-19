@@ -64,7 +64,6 @@ export class PersonneService {
   }
 
 
-
   getUserRolesByKeycloakId(keycloakUserId: string): Observable<string[]> {
     const token = this.keycloakService.getToken(); // 🔥 Récupérer le token d'authentification
   
