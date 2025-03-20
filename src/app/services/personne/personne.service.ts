@@ -65,7 +65,7 @@ export class PersonneService {
 
 
   getUserRolesByKeycloakId(keycloakUserId: string): Observable<string[]> {
-    const token = this.keycloakService.getToken(); // 🔥 Récupérer le token d'authentification
+    const token = this.keycloakService.getToken(); 
   
     if (!token) {
       console.error("Erreur : Aucun token trouvé !");
@@ -77,6 +77,29 @@ export class PersonneService {
     return this.http.get<string[]>(`${environment.API_URL}api/personnes/roles/${keycloakUserId}`, { headers });
   }
   
+  getAvailableRoles(): Observable<string[]> {
+    const token = this.keycloakService.getToken(); 
+    if (!token) {
+      console.error("Erreur : Aucun token trouvé !");
+      return throwError(() => new Error("L'utilisateur n'est pas authentifié."));
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<string[]>(`${environment.API_URL}api/personnes/client-roles`, { headers });
+  }
+
+  
+  assignRoleToUser(keycloakUserId: string, roleName: string): Observable<void> {
+    const token = this.keycloakService.getToken(); 
+  
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<void>(`${environment.API_URL}api/personnes/roles/${keycloakUserId}?roleName=${roleName}`, {}, { headers });
+  }
+
+  removeRoleFromUser(keycloakUserId: string, roleName: string): Observable<any> {
+    const token = this.keycloakService.getToken(); 
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any>(`${environment.API_URL}api/personnes/roles/${keycloakUserId}?roleName=${roleName}`, { headers });
+  }
   
   
 }

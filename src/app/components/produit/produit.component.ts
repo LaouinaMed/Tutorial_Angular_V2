@@ -81,13 +81,13 @@ export class ProduitComponent {
       else{this.produitService.addProduit(this.produitObj).subscribe(
         {
           next: (res: Produit)=>{
-            alert("Personne créée avec succès");
+            alert("Produit créée avec succès");
             this.loadProduits(); 
             
             this.resetForm(form); 
           },
           error: (error)=>{
-            alert("Échec de la création de la personne");
+            alert("Échec de la création de la produit");
           }
         }
       )

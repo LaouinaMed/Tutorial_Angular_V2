@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { PersonneComponent } from './components/personne/personne.component';
 import { LogsComponent } from './components/logs/logs.component';
 import { roleGuard } from './guards/role.guard';
-import { ProduitComponent } from './components/produit/produit/produit.component';
+import { ProduitComponent } from './components/produit/produit.component';
 
 
 export const routes: Routes = [
