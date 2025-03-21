@@ -17,20 +17,22 @@ export class PersonneService {
 
   getAllPersonnes(): Observable<Personne[]> {
     const token = this.keycloakService.getToken();
-
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
     return this.http.get<Personne[]>(`${environment.API_URL}api/personnes`, { headers });
   }
 
 
   addPersonne(obj: Personne): Observable<Personne> {
-    const token = this.keycloakService.getToken();
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      const token = this.keycloakService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      return this.http.post<Personne>(`${environment.API_URL}api/personnes`, obj, { headers });
+    }
 
-
-        return this.http.post<Personne>(`${environment.API_URL}api/personnes`, obj, { headers });
-      }
+    updatePersonne(id: number, obj: Personne): Observable<Personne> {
+      const token = this.keycloakService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      return this.http.put<Personne>(`${environment.API_URL}api/personnes/${id}`, obj, { headers });
+    }
 
   deletePersonneById(id: number): Observable<void> {
     const token = this.keycloakService.getToken();
@@ -39,11 +41,7 @@ export class PersonneService {
     return this.http.delete<void>(`${environment.API_URL}api/personnes/${id}`, { headers });
   }
 
-  updatePersonne(id: number, obj: Personne): Observable<Personne> {
-    const token = this.keycloakService.getToken();
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.put<Personne>(`${environment.API_URL}api/personnes/${id}`, obj, { headers });
-  }
+
 
   importData(): Observable<any> {
     const token = this.keycloakService.getToken();
@@ -66,23 +64,12 @@ export class PersonneService {
 
   getUserRolesByKeycloakId(keycloakUserId: string): Observable<string[]> {
     const token = this.keycloakService.getToken(); 
-  
-    if (!token) {
-      console.error("Erreur : Aucun token trouvé !");
-      return throwError(() => new Error("L'utilisateur n'est pas authentifié."));
-    }
-  
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
     return this.http.get<string[]>(`${environment.API_URL}api/personnes/roles/${keycloakUserId}`, { headers });
   }
   
   getAvailableRoles(): Observable<string[]> {
     const token = this.keycloakService.getToken(); 
-    if (!token) {
-      console.error("Erreur : Aucun token trouvé !");
-      return throwError(() => new Error("L'utilisateur n'est pas authentifié."));
-    }
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<string[]>(`${environment.API_URL}api/personnes/client-roles`, { headers });
   }
@@ -90,7 +77,7 @@ export class PersonneService {
   
   assignRoleToUser(keycloakUserId: string, roleName: string): Observable<void> {
     const token = this.keycloakService.getToken(); 
-  
+
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.put<void>(`${environment.API_URL}api/personnes/roles/${keycloakUserId}?roleName=${roleName}`, {}, { headers });
   }

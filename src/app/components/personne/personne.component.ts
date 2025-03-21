@@ -1,19 +1,22 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Personne } from 'src/app/model/class/Personne';
 import { FormGroup, FormsModule, NgForm } from '@angular/forms';
 import { PersonneService } from 'src/app/services/personne/personne.service';
 import * as bootstrap from 'bootstrap';
+import { RoleManagmentComponent } from '../role-managment/role-managment.component';
 
 
 @Component({
   selector: 'app-personne',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RoleManagmentComponent],
   templateUrl: './personne.component.html',
   styleUrls: ['./personne.component.css']
 })
 export class PersonneComponent implements OnInit {
+  @ViewChild(RoleManagmentComponent) roleMangementComponent!: RoleManagmentComponent; // Référence au composant enfant
+
   personneObj: Personne = new Personne();
   personneList: Personne[] = [];
 
@@ -168,8 +171,8 @@ export class PersonneComponent implements OnInit {
           console.log('Fichier uploadé avec succès', response);
           alert("Fichier uploadé avec succès");
           this.loadPersonnes(); 
-  
           const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+          
           if (fileInput) {
             fileInput.value = ''; 
           }
@@ -184,156 +187,13 @@ export class PersonneComponent implements OnInit {
     }
   }
 
+  onSelectUser(user: Personne) {
+    this.selectedUser = { ...user };  // Crée une nouvelle instance avec les mêmes données
 
-    // Ouvrir la modale pour afficher et attribuer les rôles
-  openRoleModal(user: Personne) {
-    this.selectedUser = user;
-
-    if (!user.keycloakId) {
-      console.error("Erreur : Cet utilisateur n'a pas de Keycloak ID !");
-      return;
-    }
-
-    // Récupérer les rôles actuels de l'utilisateur
-    this.personneService.getUserRolesByKeycloakId(user.keycloakId).subscribe({
-      next: (roles) => {
-        this.userRoles = roles;
-      },
-      error: (error) => {
-        console.error("Erreur lors de la récupération des rôles", error);
-        this.userRoles = [];
-      }
-    });
-
-    // Récupérer la liste des rôles disponibles
-    this.personneService.getAvailableRoles().subscribe({
-      next: (roles) => {
-        this.availableRoles = roles;
-        this.rolesToAdd = [];  // Réinitialiser les rôles à ajouter
-        this.showRoleModal();
-      },
-      error: (error) => {
-        console.error("Erreur lors de la récupération des rôles disponibles", error);
-        this.availableRoles = [];
-      }
-    });
-  }
-
-  // Dans le composant : PersonneComponent
-
-// Ouvrir la modale et afficher les rôles de l'utilisateur
-viewRoles(user: Personne) {
-  this.selectedUser = user;
-
-  if (!user.keycloakId) {
-    console.error("Erreur : Cet utilisateur n'a pas de Keycloak ID !");
-    return;
-  }
-
-  // Récupérer les rôles actuels de l'utilisateur
-  this.personneService.getUserRolesByKeycloakId(user.keycloakId).subscribe({
-    next: (roles) => {
-      this.userRoles = roles;
-    },
-    error: (error) => {
-      console.error("Erreur lors de la récupération des rôles", error);
-      this.userRoles = [];
-    }
-  });
-
-  // Récupérer la liste des rôles disponibles
-  this.personneService.getAvailableRoles().subscribe({
-    next: (roles) => {
-      this.availableRoles = roles;
-      this.rolesToAdd = [];  // Réinitialiser les rôles à ajouter
-      this.showRoleModal();  // Afficher la modale une fois les données chargées
-    },
-    error: (error) => {
-      console.error("Erreur lors de la récupération des rôles disponibles", error);
-      this.availableRoles = [];
-    }
-  });
-}
-
-onRoleChange(role: string) {
-  const index = this.rolesToAdd.indexOf(role);
-  if (index === -1) {
-    this.rolesToAdd.push(role);  // Ajouter le rôle à la liste des rôles à ajouter
-  } else {
-    this.rolesToAdd.splice(index, 1);  // Retirer le rôle de la liste des rôles à ajouter
-  }
-}
-
-
-  // Afficher la modale
-  showRoleModal() {
-    const modal = new bootstrap.Modal(document.getElementById('rolesModal')!);
-    modal.show();
-  }
-
-
-  // Méthode pour attribuer des rôles à l'utilisateur
-  addRolesToUser() {
-    if (this.selectedUser && this.rolesToAdd.length > 0) {
-      const roles = this.rolesToAdd.join(','); // Joindre les rôles avec des virgules
-      this.personneService.assignRoleToUser(this.selectedUser.keycloakId!, roles).subscribe({
-        next: () => {
-          // Affichage d'un message de succès
-          alert('Les rôles ont été attribués avec succès !');
-
-          // Rafraîchir les rôles de l'utilisateur après l'attribution
-          this.refreshUserRoles();  // Rafraîchit la liste des rôles
-
-          // Réinitialiser la liste des rôles à ajouter
-          this.rolesToAdd = [];  
-
-
-        },
-        error: (error) => {
-          console.error("Erreur lors de l'attribution des rôles", error);
-          alert('Une erreur s\'est produite lors de l\'attribution des rôles.');
-        }
-      });
+    // Appeler la méthode viewRoles du composant enfant
+    if (this.roleMangementComponent) {
+      this.roleMangementComponent.viewRoles(this.selectedUser);
     }
   }
-
-  // Méthode pour supprimer un rôle de l'utilisateur
-  removeRoleFromUser(roleName: string) {
-    if (this.selectedUser) {
-      console.log("######################################")
-      console.log(this.selectedUser.keycloakId)
-      console.log(roleName)
-      this.personneService.removeRoleFromUser(this.selectedUser.keycloakId!, roleName).subscribe({
-        next: (response) => {
-          // Affichage du message de succès
-          alert('Le rôle a été supprimé avec succès!');
-
-          // Rafraîchir les rôles après suppression
-          this.refreshUserRoles();  // Rafraîchit les rôles
-
-
-        },
-        error: (error) => {
-          console.error('Erreur lors de la suppression du rôle', error);
-          alert('Une erreur s\'est produite lors de la suppression du rôle');
-        }
-      });
-    }
-  }
-
-  // Rafraîchir les rôles de l'utilisateur
-  refreshUserRoles() {
-    if (this.selectedUser && this.selectedUser.keycloakId) {
-      this.personneService.getUserRolesByKeycloakId(this.selectedUser.keycloakId).subscribe({
-        next: (roles) => {
-          this.userRoles = roles;  // Mettre à jour les rôles affichés dans l'UI
-        },
-        error: (error) => {
-          console.error("Erreur lors de la récupération des rôles actualisés", error);
-        }
-      });
-    }
-  }
-
   
 }
