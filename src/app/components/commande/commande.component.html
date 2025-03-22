@@ -1,0 +1,130 @@
+<div class="row g-3">
+    <!-- Recherche de commandes -->
+    <div class="col-8">
+      <div class="card">
+        <div class="card-header bg-success">
+          <strong>Chercher Commandes</strong>
+        </div>
+        <div class="card-body">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="searchQuery"
+            placeholder="Chercher Par Nom, Produit, Status"
+            (input)="onSearch()"
+          />
+        </div>
+      </div>
+    </div>
+  
+  <!-- Liste des commandes -->
+  <div class="col-10">
+    <div class="card">
+      <div class="card-header bg-success">
+        <strong>Liste des Commandes</strong>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nom Personne</th>
+              <th>Produit</th>
+              <th>Quantité</th>
+              <th>Statut</th>
+              <th>Montant</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of filteredCommandes; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ item.personne.nom }}</td>
+              <td>{{ item.produit.libeller }}</td>
+              <td>{{ item.quantite }}</td>
+              <td>{{ item.statut }}</td>
+              <td>{{ item.montant | currency }}</td>
+              <td>
+                <button class="btn btn-primary me-4" (click)="onEdit(item)">Edit</button>
+                <button class="btn btn-danger me-4" (click)="onDelete(item.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Formulaire pour ajouter ou modifier une commande -->
+  <div class="col-2">
+    <div class="card">
+      <div class="card-header bg-success">
+        <strong>Nouvelle Commande</strong>
+      </div>
+      <div class="card-body">
+        <form #form="ngForm" (ngSubmit)="onSaveCommande()">
+          <div class="row">
+            <div class="col-12">
+              <label for="nomPersonne">Nom Personne</label>
+              <input
+                type="text"
+                name="nomPersonne"
+                [(ngModel)]="commandeObj.personne.nom"
+                class="form-control"
+                #nom="ngModel"
+                [class.is-invalid]="nom.invalid && nom.touched"
+              />
+              <small *ngIf="nom.invalid && nom.touched" class="text-danger">Nom invalide.</small>
+            </div>
+
+            <div class="col-12">
+                <label for="nomPersonne">Tel</label>
+                <input
+                  type="text"
+                  name="tel"
+                  [(ngModel)]="commandeObj.personne.tel"
+                  class="form-control"
+                />
+              </div>
+
+            <div class="col-12">
+                <label for="quantite">Quantite</label>
+                <input
+                  type="number" name="quantite" [(ngModel)]="commandeObj.quantite" class="form-control"/>
+              </div>
+  
+              <div class="col-12">
+                <label for="libellerProduit">Produit</label>
+                <select name="libellerProduit" [(ngModel)]="commandeObj.produit.libeller" class="form-control" #libeller="ngModel">
+                  <option *ngIf="produitsDisponibles.length === 0" disabled>Pas de produits disponibles</option>
+                  <option *ngFor="let produit of produitsDisponibles" [value]="produit.libeller">{{ produit.libeller }}</option>
+                </select>
+              </div>
+
+  
+            <div class="col-12">
+                <label for="statut">Statut</label>
+                <select name="statut" [(ngModel)]="commandeObj.statut" class="form-control" #statut="ngModel">
+                    <option *ngIf="statutsDisponibles.length === 0" disabled>Pas de statuts disponibles</option>
+                    <option *ngFor="let statut of statutsDisponibles" [value]="statut">{{ statut }}</option>                </select>
+            </div>
+  
+
+          </div>
+  
+          <div class="row pt-2">
+            <div class="col-12 text-center">
+              <button class="btn btn-secondary" type="button" (click)="resetForm()">Réinitialiser</button>
+            </div>
+  
+            <div class="col-12">
+              <button class="btn btn-success" type="submit" [disabled]="form.invalid">
+                {{ commandeObj.id != null && commandeObj.id !== 0 ? 'Modifier la Commande' : 'Ajouter la Commande' }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

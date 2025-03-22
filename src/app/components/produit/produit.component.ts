@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Produit } from 'src/app/model/class/produit';
 import { ProduitService } from 'src/app/services/produit/produit.service';
 import { FormsModule, NgForm } from '@angular/forms';
+import { KeycloakService } from 'src/app/services/keycloak/keycloak.service';
 
 @Component({
   selector: 'app-produit',
@@ -17,11 +18,24 @@ export class ProduitComponent {
   produitList : Produit[] = [];
   filteredProduits: Produit[] = [];
   searchQuery : string = '';
+  userRoles: string[] = [];  // Stocke les rôles de l'utilisateur
+  isAdmin: boolean = false; 
 
-  produitService =inject(ProduitService)
+  constructor(private produitService: ProduitService, private keycloakService: KeycloakService) {}
 
   ngOnInit(): void {
     this.loadProduits();
+    this.getUserRoles();
+  }
+
+  getUserRoles() {
+    // Récupérer les rôles de l'utilisateur à partir de Keycloak ou un autre service
+    this.userRoles = this.keycloakService.getUserRoles();  // Implémenter selon votre service d'authentification
+
+    // Vérifiez si l'utilisateur a le rôle 'client_admin'
+    if (this.userRoles.includes('client_admin')) {
+      this.isAdmin = true;  // L'utilisateur est un administrateur
+    }
   }
 
 

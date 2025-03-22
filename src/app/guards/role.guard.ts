@@ -16,15 +16,20 @@ export class roleGuard implements CanActivate {
     const requiredRoles = route.data['roles'];  // Récupère les rôles requis pour la route
 
     
-    // Récupère les rôles de l'utilisateur en utilisant la méthode getUserRoles() du KeycloakService
     const roles: string[] = this.keycloakService.getUserRoles();
-    console.log(roles);
+    const hasRole = requiredRoles.some((role:string) => roles.includes(role));
 
     // Vérifie si l'utilisateur a l'un des rôles requis
-    if (roles.includes('client_admin') || roles.includes('client_user')) {
+    if (hasRole) {
       return true;  // L'utilisateur a l'un des rôles nécessaires, il peut accéder à la route
     }
-    this.keycloakService.logout();  
+
+    if (roles.includes('client_user') && requiredRoles.includes('client_admin')) {
+      // Redirige l'utilisateur vers la route 'produit' s'il est un client_user
+      this.router.navigate(['/produit']);
+      return false;
+    }
+    this.router.navigate(['/access-denied']);
 
     
     return false;

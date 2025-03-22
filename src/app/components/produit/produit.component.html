@@ -27,7 +27,7 @@
                             <th>Produit</th>
                             <th>Quantite</th>
                             <th>Prix</th>
-    
+                            <th  *ngIf="isAdmin">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,9 +38,9 @@
                             <td>{{ item.prix }}</td>
                             
                             
-                            <td>
-                                <button class="btn btn-primary me-4" (click)="onEdit(item)">Edit</button>
-                                <button class="btn btn-danger me-4" (click)="onDelete(item.id)">Delete</button>
+                            <td *ngIf="isAdmin">
+                                <button   class="btn btn-primary me-4" (click)="onEdit(item)">Edit</button>
+                                <button   class="btn btn-danger me-4" (click)="onDelete(item.id)">Delete</button>
 
                             </td>
                         </tr>
@@ -50,10 +50,10 @@
         </div>
     </div>
 
-    <div class="col-4">
+    <div class="col-4"  *ngIf="isAdmin">
          
         <div class="card">
-            <div class="card-header bg-success">
+            <div class="card-header bg-success" >
                 <strong>Nouveau Produit</strong>
             </div>
             <div class="card-body">
