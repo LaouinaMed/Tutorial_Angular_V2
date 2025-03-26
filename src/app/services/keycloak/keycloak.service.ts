@@ -41,14 +41,13 @@ export class KeycloakService {
      const authenticated = await this.keycloak?.init({
         onLoad: 'login-required',  
       });
-      //console.log('Keycloak initialisé avec succès, utilisateur authentifié:', authenticated);
-      //console.log('Token:', this.keycloak?.token);
-
-      //console.log('Token récupéré:', this.getToken());
+  
     } catch (error) {
       console.error('Erreur d\'initialisation de Keycloak', error);
     }
   }
+
+ 
 
   logout() {
     if (this.keycloak) {

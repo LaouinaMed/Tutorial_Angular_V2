@@ -4,6 +4,7 @@ import { Produit } from 'src/app/model/class/produit';
 import { ProduitService } from 'src/app/services/produit/produit.service';
 import { FormsModule, NgForm } from '@angular/forms';
 import { KeycloakService } from 'src/app/services/keycloak/keycloak.service';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-produit',
@@ -20,6 +21,8 @@ export class ProduitComponent {
   searchQuery : string = '';
   userRoles: string[] = [];  // Stocke les rôles de l'utilisateur
   isAdmin: boolean = false; 
+  modalInstance: bootstrap.Modal | null = null;
+  
 
   constructor(private produitService: ProduitService, private keycloakService: KeycloakService) {}
 
@@ -57,8 +60,22 @@ export class ProduitComponent {
     this.produitObj = new Produit();
   }
 
+  showProduitModal() {
+    const modalElement = document.getElementById('produitModal');
+    if (modalElement) {
+      this.modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+      this.modalInstance.show();
+    }
+  }
+
+  openNewProduit() {
+    this.produitObj = new Produit();
+    this.showProduitModal();
+  }
+
    onEdit(data: Produit) {
-      this.produitObj = { ...data }; 
+      this.produitObj = { ...data };
+      this.showProduitModal(); 
   }
 
   onDelete(id: number) {
@@ -84,7 +101,7 @@ export class ProduitComponent {
             next:(res : Produit) =>{
               alert("Produit mise à jour avec succès");
               this.loadProduits();
-              this.resetForm(form);
+              this.modalInstance?.hide();
             },
             error: (error)=>{
               alert("Échec de la mise à jour de la produit");
@@ -97,8 +114,7 @@ export class ProduitComponent {
           next: (res: Produit)=>{
             alert("Produit créée avec succès");
             this.loadProduits(); 
-            
-            this.resetForm(form); 
+            this.modalInstance?.hide();
           },
           error: (error)=>{
             alert("Échec de la création de la produit");

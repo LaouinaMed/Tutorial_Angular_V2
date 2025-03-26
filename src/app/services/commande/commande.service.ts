@@ -13,7 +13,7 @@ export class CommandeService {
   constructor(private readonly http: HttpClient, private readonly keycloakService: KeycloakService) { }
 
   getAllCommandes(): Observable<Commande[]> {
-    const token = this.keycloakService.getToken();  // Obtient le token d'authentification
+    const token = this.keycloakService.getToken();  
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<Commande[]>(`${environment.API_URL}api/commandes`, { headers });
   }
@@ -24,24 +24,33 @@ export class CommandeService {
     return this.http.post<Commande>(`${environment.API_URL}api/commandes`, commande, { headers });
   }
 
-  // Modifier une commande existante
   updateCommande(id: number, commande: Commande): Observable<Commande> {
     const token = this.keycloakService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.put<Commande>(`${environment.API_URL}api/commandes/${id}`, commande, { headers });
   }
 
-  // Supprimer une commande
   deleteCommande(id: number): Observable<void> {
     const token = this.keycloakService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.delete<void>(`${environment.API_URL}api/commandes/${id}`, { headers });
   }
 
-  // Récupérer la liste des statuts disponibles
   getStatutsDisponibles(): Observable<string[]> {
     const token = this.keycloakService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<string[]>(`${environment.API_URL}api/commandes/statuts`, { headers });
+  }
+
+  uploadFile(file: File): Observable<any> {
+    const token = this.keycloakService.getToken();
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    return this.http.post<any>(`${environment.API_URL}api/commandes/upload`, formData, {
+      headers: headers
+    });
   }
 }

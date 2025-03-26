@@ -31,6 +31,9 @@ export class PersonneComponent implements OnInit {
   availableRoles: string[] = [];  // Rôles disponibles à assigner
   rolesToAdd: string[] = [];  // Rôles sélectionnés à ajouter
 
+  modalInstance: bootstrap.Modal | null = null;
+
+
 
 
 
@@ -48,24 +51,11 @@ export class PersonneComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadPersonnes();
+    
   }
 
   
-  
 
-  onImport(): void {
-    this.personneService.importData().subscribe({
-      next: (res) => {
-        console.log('Données importées:', res);
-    },
-    error: (error) => {
-        console.error('Erreur lors de l\'importation:', error);
-    },
-    complete: () => {
-        console.log('Importation terminée.');
-    }
-    }); 
-  }
 
   loadPersonnes(){
     this.personneService.getAllPersonnes().subscribe(
@@ -89,13 +79,13 @@ export class PersonneComponent implements OnInit {
   }
 
   onSavePersonne(form: NgForm){
-    if(this.personneObj.id != null && this.personneObj.id !== 0){
+    if(this.personneObj.id != null){
       this.personneService.updatePersonne(this.personneObj.id, this.personneObj).subscribe(
         {
           next:(res : Personne) =>{
             alert("Personne mise à jour avec succès");
             this.loadPersonnes();
-            this.resetForm(form);
+            this.modalInstance?.hide();
           },
           error: (error)=>{
             alert("Échec de la mise à jour de la personne");
@@ -108,8 +98,7 @@ export class PersonneComponent implements OnInit {
         next: (res: Personne)=>{
           alert("Personne créée avec succès");
           this.loadPersonnes(); 
-          
-          this.resetForm(form); 
+          this.modalInstance?.hide();
         },
         error: (error)=>{
           alert("Échec de la création de la personne");
@@ -119,8 +108,6 @@ export class PersonneComponent implements OnInit {
 
     }
   }
-
-
 
 
   onDelete(id: number) {
@@ -138,11 +125,11 @@ export class PersonneComponent implements OnInit {
       });
     }
   }
-  
 
 
   onEdit(data: Personne) {
-    this.personneObj = { ...data }; 
+    this.personneObj = { ...data };
+    this.showPersonneModal(); 
   }
 
 
@@ -160,12 +147,35 @@ export class PersonneComponent implements OnInit {
     }
     console.log('Filtered list:', this.filteredPersonnes);
   }
+  
+  showPersonneModal() {
+    const modalElement = document.getElementById('personneModal');
+    if (modalElement) {
+      this.modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+      this.modalInstance.show();
+    }
+  }
+
+  openNewPersonne() {
+    this.personneObj = new Personne();
+    this.showPersonneModal();
+  }
+
+
+
+  onSelectUser(user: Personne) {
+    this.selectedUser = { ...user };  
+
+    if (this.roleMangementComponent) {
+      this.roleMangementComponent.viewRoles(this.selectedUser);
+    }
+  }
 
 
   onFileSelected(event: any): void {
     this.selectedFile = event.target.files[0];
   }
-
+/*
   onUploadFile(): void {
     if (this.selectedFile) {
       this.personneService.uploadFile(this.selectedFile).subscribe({
@@ -188,14 +198,21 @@ export class PersonneComponent implements OnInit {
       alert("Veuillez sélectionner un fichier");
     }
   }
-
-  onSelectUser(user: Personne) {
-    this.selectedUser = { ...user };  // Crée une nouvelle instance avec les mêmes données
-
-    // Appeler la méthode viewRoles du composant enfant
-    if (this.roleMangementComponent) {
-      this.roleMangementComponent.viewRoles(this.selectedUser);
+*/
+  onImport(): void {
+    this.personneService.importData().subscribe({
+      next: (res) => {
+        console.log('Données importées:', res);
+    },
+    error: (error) => {
+        console.error('Erreur lors de l\'importation:', error);
+    },
+    complete: () => {
+        console.log('Importation terminée.');
     }
+    }); 
   }
+
+
   
 }

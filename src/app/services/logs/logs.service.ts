@@ -12,10 +12,16 @@ export class LogsService {
 
   constructor(private readonly http: HttpClient, private readonly keycloakService : KeycloakService) { }
 
-  getAllLogs(): Observable<LogsErreur[]>{
+  getLogs(page: number, size: number, filter?: string): Observable<any> {
     const token = this.keycloakService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<LogsErreur[]>(`${environment.API_URL}api/personnes/logs`, { headers });
-    
+    const params = { 
+      page: page.toString(), 
+      size: size.toString(), 
+      filter: filter || '' 
+    };
+
+    return this.http.get<any>(`${environment.API_URL}api/personnes/logs`, { headers, params });
   }
 }
+

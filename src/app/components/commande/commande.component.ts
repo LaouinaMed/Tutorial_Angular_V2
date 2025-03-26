@@ -6,6 +6,8 @@ import { Produit } from 'src/app/model/class/produit'; // Assurez-vous que le mo
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProduitService } from 'src/app/services/produit/produit.service';
+import { KeycloakService } from 'src/app/services/keycloak/keycloak.service';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-commande',
@@ -17,40 +19,60 @@ import { ProduitService } from 'src/app/services/produit/produit.service';
 export class CommandeComponent implements OnInit {
 
   commandes: Commande[] = [];
-  commandeObj: Commande = new Commande(0, '', 0, 0, new Personne(), new Produit()); // Initialisation avec objets Personne et Produit vides
+  commandeObj: Commande = new Commande(); 
   filteredCommandes: Commande[] = [];
   searchQuery: string = '';  // Pour rechercher des commandes
   statutsDisponibles: string[] = [];  // Array pour stocker les statuts disponibles
   produitsDisponibles: Produit[] = [];
+  userRoles: string[] = [];
+  isAdmin: boolean = false;
+  isUser_Edit_Statut: boolean = false;  
+  modalInstance: bootstrap.Modal | null = null;
+  selectedFile: File | null = null;
+
+  
 
 
-  constructor(private commandeService: CommandeService, private produitService: ProduitService // Injecter ProduitService
-  ) {}
+  constructor(private commandeService: CommandeService, private produitService: ProduitService , private keycloakService : KeycloakService // Injecter ProduitService
+) {}
 
   ngOnInit(): void {
     this.loadCommandes();
+    this.getUserRoles();
     this.loadStatutsDisponibles();
     this.loadProduitsDisponibles();
   }
 
-  // Charger toutes les commandes
+  getUserRoles() {
+    this.userRoles = this.keycloakService.getUserRoles();  
+
+    if (this.userRoles.includes('client_admin')) {
+      this.isAdmin = true;  
+    }
+    if (this.userRoles.includes('client_user_edit_statut')) {
+      this.isUser_Edit_Statut = true;  
+    }
+  }
+
   loadCommandes() {
     this.commandeService.getAllCommandes().subscribe({
       next: (res: Commande[]) => {
-        this.commandes = res;
-        this.filteredCommandes = res;
+        this.commandes = res;  
+        this.filteredCommandes = res;  
       },
       error: (error) => {
-        console.error('Error fetching commandes', error);
+        console.error('Erreur lors de la récupération des commandes', error);
       }
     });
   }
+  
+  
 
   loadProduitsDisponibles() {
     this.produitService.getAllProduits().subscribe({
       next: (produits: Produit[]) => {
-        this.produitsDisponibles = produits;  // Stocke les produits dans la variable produitsDisponibles
-        console.log('Produits Disponibles:', this.produitsDisponibles);  // Vérifiez si les produits sont bien récupérés
+        this.produitsDisponibles = produits;  
+        console.log('Produits Disponibles:', this.produitsDisponibles);  
       },
       error: (error) => {
         console.error('Error fetching produits', error);
@@ -70,15 +92,14 @@ export class CommandeComponent implements OnInit {
     });
   }
 
-  // Ajouter ou modifier une commande
   onSaveCommande() {
     if (this.commandeObj.id !== 0) {
-      // Mise à jour de la commande
       this.commandeService.updateCommande(this.commandeObj.id, this.commandeObj).subscribe({
         next: (res: Commande) => {
           alert('Commande mise à jour avec succès');
-          this.loadCommandes(); // Recharger la liste des commandes
-          this.commandeObj = new Commande(0, '', 0, 0, new Personne(), new Produit());  // Réinitialiser le formulaire
+          this.loadCommandes(); 
+          this.modalInstance?.hide();
+
         },
         error: (error) => {
           alert('Échec de la mise à jour de la commande');
@@ -89,8 +110,8 @@ export class CommandeComponent implements OnInit {
       this.commandeService.addCommande(this.commandeObj).subscribe({
         next: (res: Commande) => {
           alert('Commande créée avec succès');
-          this.loadCommandes(); // Recharger la liste des commandes
-          this.commandeObj = new Commande(0, '', 0, 0, new Personne(), new Produit());  // Réinitialiser le formulaire
+          this.loadCommandes(); 
+          this.modalInstance?.hide();
         },
         error: (error) => {
           alert('Échec de la création de la commande');
@@ -127,12 +148,54 @@ export class CommandeComponent implements OnInit {
     }
   }
 
+    showCommandeModal() {
+      const modalElement = document.getElementById('commandeModal');
+      if (modalElement) {
+        this.modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+        this.modalInstance.show();
+      }
+    }
+  
+    openNewCommande() {
+      this.commandeObj = new Commande();
+      this.showCommandeModal();
+    }
+
   onEdit(data: Commande) {
     this.commandeObj = { ...data };  
+    this.showCommandeModal(); 
+
   }
 
   resetForm() {
-    this.commandeObj = new Commande(0, '', 0, 0, new Personne(), new Produit());
+    this.commandeObj = new Commande();
+  }
+
+  onFileSelected(event: any): void {
+    this.selectedFile = event.target.files[0];
+  }
+
+  onUploadFile(): void {
+    if (this.selectedFile) {
+      this.commandeService.uploadFile(this.selectedFile).subscribe({
+        next: (response) => {
+          console.log('Fichier uploadé avec succès', response);
+          alert("Fichier uploadé avec succès");
+          this.loadCommandes(); 
+          const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+          
+          if (fileInput) {
+            fileInput.value = ''; 
+          }
+        },
+        error: (error) => {
+          console.error("Erreur lors de l'upload du fichier", error);
+          alert("Échec de l'upload du fichier");
+        }
+      });
+    } else {
+      alert("Veuillez sélectionner un fichier");
+    }
   }
 
 }

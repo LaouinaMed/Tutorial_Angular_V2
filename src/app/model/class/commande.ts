@@ -9,12 +9,12 @@ export class Commande {
     personne: Personne;
     produit: Produit;
   
-    constructor(id: number, statut: string, quantite: number, montant: number, personne: Personne, produit: Produit) {
-      this.id = id;
-      this.statut = statut;
-      this.quantite = quantite;
-      this.montant = montant;
-      this.personne = personne;
-      this.produit = produit;
+    constructor() {
+      this.id = 0;
+      this.statut = 'statut';
+      this.quantite = 0;
+      this.montant = 0;
+      this.personne = new Personne();
+      this.produit = new Produit();
     }
   }

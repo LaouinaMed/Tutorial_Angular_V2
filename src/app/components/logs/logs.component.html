@@ -12,14 +12,17 @@
         </div>  
 
     </div>
-    <div class="col-10">
+    <div class="col-12">
         <div class="card">
             <div class="card-header bg-success">
                 <strong>Message</strong>
             </div>
 
             <div class="card-body">
-                <table class="table table-bordered">
+                <div *ngIf="filteredLogs.length === 0">
+                    <h3>Aucun résultat trouvé</h3>
+                </div>
+                <table *ngIf="filteredLogs.length !== 0" class="table table-bordered">
                     <thead>
                         <tr>
                             <th></th>
@@ -37,5 +40,11 @@
                 </table>
             </div>
         </div>
+    </div>
+
+    <div *ngIf="totalPages > 1" class="card-footer d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-primary btn-sm" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage <= 0">Précédent</button>
+        <span>Page {{ currentPage + 1 }} sur {{ totalPages }}</span>
+        <button class="btn btn-outline-primary btn-sm" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage >= totalPages - 1">Suivant</button>
     </div>
 </div>    

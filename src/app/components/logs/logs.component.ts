@@ -18,6 +18,10 @@ export class LogsComponent {
   searchQuery: string = '';
   filteredLogs: LogsErreur[] = []; 
 
+  currentPage: number = 0;
+  pageSize: number = 12;
+  totalLogs: number = 0;  // Nombre total de logs pour la pagination
+  totalPages: number = 0;
 
   logsService = inject(LogsService);
 
@@ -25,31 +29,27 @@ export class LogsComponent {
     this.loadLogs();
   }
 
-  loadLogs() {
-    this.logsService.getAllLogs().subscribe({
-      next: (res: LogsErreur[]) => {
-        this.logsList = res;
-        this.filteredLogs = res;
-        console.log('**Filtered list:', this.filteredLogs);
+  loadLogs(): void {
+    this.logsService.getLogs(this.currentPage, this.pageSize, this.searchQuery).subscribe({
+      next: (res: any) => {
+        this.logsList = res.content;  // Assurez-vous que les logs viennent dans la propriété 'content'
+        this.filteredLogs = this.logsList;
+        this.totalLogs = res.totalElements;
+        this.totalPages = res.totalPages;
       },
       error: (error) => {
         console.error('Error fetching logs', error);
       }
     });
   }
-  
 
   onSearch(): void {
-    if (this.searchQuery) {
-      this.filteredLogs = this.logsList.filter(log =>
-        log.message.toLocaleLowerCase().includes(this.searchQuery.toLowerCase()) 
-      );
-    } else {
-      this.filteredLogs = [...this.filteredLogs];  
-    }
-    console.log('Filtered list:', this.filteredLogs);
-
+    this.loadLogs();
   }
 
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadLogs();  // Charger la page suivante
+  }
 
 }

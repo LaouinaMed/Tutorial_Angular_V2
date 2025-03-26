@@ -48,7 +48,7 @@ export class PersonneService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post<any>(`${environment.API_URL}api/personnes/import`, {}, { headers });
   }
-
+/*
   uploadFile(file: File): Observable<any> {
     const token = this.keycloakService.getToken();
     const formData = new FormData();
@@ -60,7 +60,7 @@ export class PersonneService {
       headers: headers
     });
   }
-
+*/
 
   getUserRolesByKeycloakId(keycloakUserId: string): Observable<string[]> {
     const token = this.keycloakService.getToken(); 
