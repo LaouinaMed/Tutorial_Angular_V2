@@ -3,7 +3,6 @@ import { routes } from './app.routes';
 import { provideRouter } from '@angular/router';
 import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { KeycloakService } from './services/keycloak/keycloak.service';
-import { TokenInterceptor } from './token/token.interceptor';
 
 export function kcFactory(kcService: KeycloakService){
   return () => kcService.init().catch((error) => {
@@ -25,11 +24,6 @@ export const appConfig: ApplicationConfig = {
       multi: true,
     },
 
- 
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true, 
-    }
+
   ],
 };

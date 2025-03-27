@@ -16,7 +16,7 @@ Chart.register(PieController, ArcElement, Tooltip, Legend, Title, ChartDataLabel
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements AfterViewInit {
+export class DashboardComponent  {
   totalClients: number = 120;
   totalOrders: number = 450;
   totalProducts: number = 320;
@@ -25,7 +25,7 @@ export class DashboardComponent implements AfterViewInit {
 
   constructor(private produitService: ProduitService, private commandeService: CommandeService, private personneService: PersonneService) {}
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.loadClients();
     this.loadProduits();
     this.loadCommandes();
@@ -77,11 +77,11 @@ export class DashboardComponent implements AfterViewInit {
     }
    
     const orderStatusChart = new Chart(ctx, {
-      type: 'pie',  // Utilisation du graphique en "pie"
+      type: 'pie',  
       data: {
         labels: ['Commandes CONFIRMEE', 'Commandes REJETEE'],
         datasets: [{
-          data: [this.totalConfirmees,this.totalRejetees],  // Données statiques
+          data: [this.totalConfirmees,this.totalRejetees],  
           backgroundColor: ['#28a745', '#dc3545'],
           borderColor: ['#ffffff', '#ffffff'],
           borderWidth: 1
@@ -100,15 +100,13 @@ export class DashboardComponent implements AfterViewInit {
               }
             }
           },
-          // Configuration pour afficher les pourcentages dans le graphique
           datalabels: {
             formatter: (value: number, context: any) => {
-              // Calculer le total des valeurs de données
               let total = context.chart.data.datasets[0].data.reduce((acc: number, val: number) => acc + val, 0);
-              let percentage = ((value / total) * 100).toFixed(2);  // Calculer le pourcentage
-              return percentage + '%';  // Afficher le pourcentage
+              let percentage = ((value / total) * 100).toFixed(2);  
+              return percentage + '%';  
             },
-            color: '#fff',  // Couleur des pourcentages (blanc)
+            color: '#fff',  
             font: {
               weight: 'bold',
               size: 16
