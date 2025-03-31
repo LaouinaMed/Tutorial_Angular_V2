@@ -19,7 +19,7 @@ export class ProduitComponent {
   produitList : Produit[] = [];
   filteredProduits: Produit[] = [];
   searchQuery : string = '';
-  userRoles: string[] = [];  // Stocke les rôles de l'utilisateur
+  userRoles: string[] = [];  
   isAdmin: boolean = false; 
   modalInstance: bootstrap.Modal | null = null;
   
@@ -32,12 +32,10 @@ export class ProduitComponent {
   }
 
   getUserRoles() {
-    // Récupérer les rôles de l'utilisateur à partir de Keycloak ou un autre service
-    this.userRoles = this.keycloakService.getUserRoles();  // Implémenter selon votre service d'authentification
+    this.userRoles = this.keycloakService.getUserRoles(); 
 
-    // Vérifiez si l'utilisateur a le rôle 'client_admin'
     if (this.userRoles.includes('client_admin')) {
-      this.isAdmin = true;  // L'utilisateur est un administrateur
+      this.isAdmin = true;  
     }
   }
 

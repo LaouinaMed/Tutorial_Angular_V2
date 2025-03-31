@@ -6,7 +6,6 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <!-- Affichage des rôles actuels -->
           <h6>Rôles actuels :</h6>
           <ul class="list-group mb-3">
             <li *ngFor="let role of userRoles" class="list-group-item">
@@ -17,7 +16,6 @@
             </li>
           </ul>
   
-          <!-- Sélection des rôles à ajouter -->
           <h6>Rôles disponibles :</h6>
           <div class="form-check" *ngFor="let role of availableRoles">
             <input 

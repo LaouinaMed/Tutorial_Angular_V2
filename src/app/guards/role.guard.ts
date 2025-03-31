@@ -20,13 +20,11 @@ export class roleGuard implements CanActivate {
     const hasRole = requiredRoles.some((role:string) => roles.includes(role));
 
     if (hasRole) {
+      
       return true;  
     }
 
-    if (roles.includes('client_user')  || roles.includes('client_user_edit_statut') && requiredRoles.includes('client_admin')) {
-      this.router.navigate(['/produit']);
-      return false;
-    }
+  
     this.router.navigate(['/access-denied']);
 
     

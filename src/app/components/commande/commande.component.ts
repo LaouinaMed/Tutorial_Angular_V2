@@ -102,11 +102,10 @@ export class CommandeComponent implements OnInit {
 
         },
         error: (error) => {
-          alert('Échec de la mise à jour de la commande');
+          alert(error.error.error);
         }
       });
     } else {
-      // Ajout d'une nouvelle commande
       this.commandeService.addCommande(this.commandeObj).subscribe({
         next: (res: Commande) => {
           alert('Commande créée avec succès');

@@ -28,8 +28,8 @@ export class PersonneComponent implements OnInit {
   
   userRoles: string[] = []; 
 
-  availableRoles: string[] = [];  // Rôles disponibles à assigner
-  rolesToAdd: string[] = [];  // Rôles sélectionnés à ajouter
+  availableRoles: string[] = [];  
+  rolesToAdd: string[] = [];  
 
   modalInstance: bootstrap.Modal | null = null;
 
@@ -79,7 +79,7 @@ export class PersonneComponent implements OnInit {
   }
 
   onSavePersonne(form: NgForm){
-    if(this.personneObj.id != null){
+    if(this.personneObj.id != null && this.personneObj.id !== 0){
       this.personneService.updatePersonne(this.personneObj.id, this.personneObj).subscribe(
         {
           next:(res : Personne) =>{

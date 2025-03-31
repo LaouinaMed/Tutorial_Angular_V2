@@ -9,12 +9,16 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 
 export const routes: Routes = [
+   
+
     {
-        path:'',
-        redirectTo:'personne',
-        pathMatch:'full'
-         
+        path: '',
+
+        redirectTo: 'commande',
+        pathMatch: 'full'
     },
+
+
 
     {
         path: 'access-denied',
@@ -49,19 +53,19 @@ export const routes: Routes = [
         path:'produit',
         component:ProduitComponent,
         canActivate: [roleGuard],  
-        data: { roles: ['client_admin','client_user'] }  
+        data: { roles: ['client_admin','client_user','client_user_edit_statut'] }  
     },
 
     {
         path:'commande',
         component:CommandeComponent,
         canActivate: [roleGuard],  
-        data: { roles: ['client_admin','client_user'] }  
+        data: { roles: ['client_admin','client_user','client_user_edit_statut'] }  
     },
 
     {
         path: '**',
-        redirectTo: '/access-denied',  // Redirection vers la page d'accès refusé pour les URLs invalides
+        redirectTo: '/access-denied',  
         pathMatch: 'full',
         
       }
